@@ -5,13 +5,17 @@ function Get-BartenderCommanderNodes {
 }
 
 function Invoke-BartenderCommanderProvision {
+    param (
+        $EnvironmentName
+    )
     Invoke-ClusterApplicationProvision -ClusterApplicationName BartenderCommander
-    $Nodes = Get-BartenderCommanderNodes
+    $Nodes = Get-TervisClusterApplicationNode -ClusterApplicationName BartenderCommander -EnvironmentName $EnvironmentName
     $Nodes | Install-WCSPrintersForBartenderCommander
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
     $Nodes | Set-TervisBTLMIniFile
     $Nodes | Set-TervisCommanderTaskList
+    New-NetFirewallRule -Name "BartenderCommanderTask" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander
 }
 
 function Set-TervisBTLMIniFile {
