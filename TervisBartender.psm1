@@ -8,7 +8,7 @@ function Invoke-BartenderCommanderProvision {
     param (
         $EnvironmentName
     )
-    Invoke-ClusterApplicationProvision -ClusterApplicationName BartenderCommander
+    Invoke-ClusterApplicationProvision -ClusterApplicationName BartenderCommander -EnvironmentName $EnvironmentName
     $Nodes = Get-TervisClusterApplicationNode -ClusterApplicationName BartenderCommander -EnvironmentName $EnvironmentName
     $Nodes | Install-WCSPrintersForBartenderCommander
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
