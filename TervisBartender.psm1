@@ -15,7 +15,18 @@ function Invoke-BartenderCommanderProvision {
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
     $Nodes | Set-TervisBTLMIniFile
     $Nodes | Set-TervisCommanderTaskList
-    New-NetFirewallRule -Name "BartenderCommanderTask" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander
+    $Nodes | New-BartenderCommanderFirewallRules
+}
+
+function New-BartenderCommanderFirewallRules {
+    param (
+        [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    process {
+        Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+            New-NetFirewallRule -Name "BartenderCommanderTask" -DisplayName "Bartender Commander Task" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander
+        }
+    }
 }
 
 function Set-TervisBTLMIniFile {
