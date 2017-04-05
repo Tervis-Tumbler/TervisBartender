@@ -24,7 +24,10 @@ function New-BartenderCommanderFirewallRules {
     )
     process {
         Invoke-Command -ComputerName $ComputerName -ScriptBlock {
-            New-NetFirewallRule -Name "BartenderCommanderTask" -DisplayName "Bartender Commander Task" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander
+            $FirewallRule = Get-NetFirewallRule -Name "BartenderCommanderTask"
+            if (-not $FirewallRule) {
+                New-NetFirewallRule -Name "BartenderCommanderTask" -DisplayName "Bartender Commander Task" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander
+            }
         }
     }
 }
