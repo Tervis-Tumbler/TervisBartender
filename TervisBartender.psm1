@@ -13,7 +13,7 @@ function Invoke-BartenderCommanderProvision {
     $Nodes | Install-WCSPrintersForBartenderCommander
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
-    $Nodes | Set-TervisBTLMIniFile
+    $Nodes | Set-TervisBartenderFiles
     $Nodes | Set-TervisCommanderTaskList
     $Nodes | New-BartenderCommanderFirewallRules
 }
@@ -32,16 +32,16 @@ function New-BartenderCommanderFirewallRules {
     }
 }
 
-function Set-TervisBTLMIniFile {
+function Set-TervisBartenderFiles {
     param (
         [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
     )
     begin {
-        $BartenderProgramData = "C:\ProgramData\Seagull\BarTender"    
+        $PathToContainProgramData = "C:\"
     }
     process {
-        $BartenderProgramDataPathOnNode = $BartenderProgramData | ConvertTo-RemotePath -ComputerName $ComputerName
-        Copy-Item -Path $ModulePath\BTLM.ini -Destination $BartenderProgramDataPathOnNode\BTLM.ini -Force
+        $PathToContainProgramDataOnNode = $PathToContainProgramData | ConvertTo-RemotePath -ComputerName $ComputerName
+        Copy-Item -Path $ModulePath\ProgramData -Destination $PathToContainProgramDataOnNode -Force -Recurse
     }
 }
 
