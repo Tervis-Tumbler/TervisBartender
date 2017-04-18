@@ -18,15 +18,47 @@ function Invoke-BartenderCommanderProvision {
     $Nodes | New-BartenderCommanderFirewallRules
 }
 
+function Invoke-BartenderLicenseServerProvision {
+    param (
+        $EnvironmentName
+    )
+    Invoke-ClusterApplicationProvision -ClusterApplicationName BartenderLicenseServer -EnvironmentName $EnvironmentName
+    $Nodes = Get-TervisClusterApplicationNode -ClusterApplicationName BartenderLicenseServer -EnvironmentName $EnvironmentName
+    $Nodes | Start-BartenderLicenseServerService
+}
+
 function New-BartenderCommanderFirewallRules {
     param (
         [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
     )
     process {
         Invoke-Command -ComputerName $ComputerName -ScriptBlock {
-            $FirewallRule = Get-NetFirewallRule -Name "BartenderCommanderTask"
+            $FirewallRule = Get-NetFirewallRule -Name "BartenderCommanderTask" -ErrorAction SilentlyContinue
             if (-not $FirewallRule) {
-                New-NetFirewallRule -Name "BartenderCommanderTask" -DisplayName "Bartender Commander Task" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander
+                New-NetFirewallRule -Name "BartenderCommanderTask" -DisplayName "Bartender Commander Task" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander | Out-Null
+            }
+        }
+    }
+}
+
+function New-BartenderLicenseServerFirewallRules {
+    param (
+        [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    process {
+        New-TervisFirewallRule -ComputerName $ComputerName -DisplayName "Bartender License Server" -Group Bartender -LocalPort 5160 -Name "BartenderLicenseServer" -Direction Inbound -Action Allow -Protocol tcp
+    }
+}
+
+function Start-BartenderLicenseServerService {
+    param (
+        [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    process {
+        Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+            $ServiceStatus = Get-Service -Name "Seagull License Server"
+            if ($ServiceStatus.Status -ne "Running") {
+                Start-Service -Name "Seagull License Server"
             }
         }
     }
