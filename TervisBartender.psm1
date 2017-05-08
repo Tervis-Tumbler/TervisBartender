@@ -136,12 +136,12 @@ function Install-BartenderCommanderScheduledTasks {
     )
     begin {
         $SystemCredential = New-Object System.Management.Automation.PSCredential ('System',(New-Object System.Security.SecureString))
-        $Argument = '/c sc stop "Commander Service" && sleep 10 && sc start "Commander Service"'
+        $Argument = "-NoProfile -Command `"& {Stop-Service -Name 'Commander Service' -Force -PassThru | Start-Service}`""
     }
     process {
         Install-TervisScheduledTask -Credential $SystemCredential `
             -TaskName "Restart Commander Service" `
-            -Execute cmd.exe `
+            -Execute PowerShell `
             -Argument $Argument `
             -RepetitionIntervalName EveryDayAt3am `
             -ComputerName $ComputerName
