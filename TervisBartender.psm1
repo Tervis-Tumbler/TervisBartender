@@ -16,6 +16,7 @@ function Invoke-BartenderCommanderProvision {
     $Nodes | Set-TervisBartenderFiles
     $Nodes | Set-TervisCommanderTaskList
     $Nodes | New-BartenderCommanderFirewallRules
+    $Nodes | Install-BartenderCommanderScheduledTasks
 }
 
 function Invoke-BartenderLicenseServerProvision {
@@ -126,5 +127,23 @@ function Remove-TervisCommanderTaskList {
     )
     process {
         Remove-Item "\\$ComputerName\C$\ProgramData\TervisSeagull\Commander\btxml.tl"
+    }
+}
+
+function Install-BartenderCommanderScheduledTasks {
+    param (
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    begin {
+        $SystemCredential = New-Object System.Management.Automation.PSCredential ('System',(New-Object System.Security.SecureString))
+        $Argument = "-NoProfile -Command `"& {Stop-Service -Name 'Commander Service' -Force -PassThru | Start-Service}`""
+    }
+    process {
+        Install-TervisScheduledTask -Credential $SystemCredential `
+            -TaskName "Restart Commander Service" `
+            -Execute PowerShell `
+            -Argument $Argument `
+            -RepetitionIntervalName EveryDayAt3am `
+            -ComputerName $ComputerName
     }
 }
