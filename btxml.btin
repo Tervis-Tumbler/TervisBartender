@@ -1,0 +1,42 @@
+﻿<IntegrationFile Name="btxml" Version="4" ID="a01c26a6-574a-45e9-ad63-16bff142cfcf">
+  <ActionGroup Name="IntegrationFileActionGroup" ID="e8e6dfd0-f7a4-4edb-8e7b-c3384d9a6afb" RunMethod="Sequential" MessagingEnabled="false">
+    <Actions>
+      <SocketIntegration Name="Tervis" ID="d7d95aa1-72b6-4a87-9d99-858e005ac045" IgnoreErrors="true" Port="5170" ReadTimeout="60000" MaximumConnections="2048" Encoding="WindowsDefault">
+        <ActionGroup ID="e6850a3b-6877-467d-867e-3e28ad6f3679" RunMethod="Sequential" MessagingEnabled="false">
+          <Actions>
+            <BarTenderBatchAction Name="Print BTXML Script" ID="de61858c-029e-4a52-a6a7-f7f0641cb2ed" IgnoreErrors="true" BatchScriptTimeout="-1">
+              <BatchXml>
+                <Value>%EventData%</Value>
+              </BatchXml>
+            </BarTenderBatchAction>
+            <SendSocketAction Name="Send to Network Socket" ID="00fbe396-9cc6-49bf-886d-7100a98d785b" IgnoreErrors="true" HostName="0.0.0.0" SendToInboundConnection="true">
+              <Source>
+                <Value>%Response%</Value>
+              </Source>
+            </SendSocketAction>
+          </Actions>
+        </ActionGroup>
+        <TriggerEvent.CharacterSequence IncludeInStreamData="false">
+          <CharacterSequence>&#x3;</CharacterSequence>
+        </TriggerEvent.CharacterSequence>
+      </SocketIntegration>
+    </Actions>
+  </ActionGroup>
+  <Metadata>
+    <Properties>
+      <Properties Name="BuilderName" Type="System.String">
+        <Value>TaskListToIntegrationFileConverter</Value>
+      </Properties>
+      <Properties Name="BuilderVersion" Type="System.Double">
+        <Value>1</Value>
+      </Properties>
+      <Properties Name="SelectedIntegration" Type="System.Int32">
+        <Value>0</Value>
+      </Properties>
+      <Properties Name="SelectedOptionsPage" Type="System.String">
+        <Value>0;0</Value>
+      </Properties>
+    </Properties>
+  </Metadata>
+  <SourcePath>C:\Users\cmagnuson\OneDrive - tervis.com\Documents\WindowsPowerShell\Modules\TervisBartender\btxml.btin</SourcePath>
+</IntegrationFile>
