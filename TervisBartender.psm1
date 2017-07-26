@@ -28,6 +28,21 @@ function Invoke-BartenderLicenseServerProvision {
     $Nodes | Start-BartenderLicenseServerService
 }
 
+function Invoke-BartenderIntegrationServiceProvision {
+    param (
+        $EnvironmentName
+    )
+    Invoke-ApplicationProvision -ApplicationName BartenderIntegrationService -EnvironmentName $EnvironmentName
+    $Nodes = Get-TervisApplicationNode -ApplicationName BartenderIntegrationService -EnvironmentName $EnvironmentName
+    $Nodes | Install-WCSPrinters -PrintEngineOrientationRelativeToLabel Bottom
+    $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
+    $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
+    $Nodes | Set-TervisBartenderFiles
+    $Nodes | Set-TervisCommanderTaskList
+    $Nodes | New-BartenderCommanderFirewallRules
+    $Nodes | Install-BartenderCommanderScheduledTasks
+}
+
 function New-BartenderCommanderFirewallRules {
     param (
         [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
