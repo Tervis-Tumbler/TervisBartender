@@ -1,15 +1,15 @@
 ﻿$ModulePath = (Get-Module -ListAvailable TervisBartender).ModuleBase
 
 function Get-BartenderCommanderNodes {
-    Get-TervisClusterApplicationNode -ClusterApplicationName BartenderCommander
+    Get-TervisApplicationNode -ApplicationName BartenderCommander
 }
 
 function Invoke-BartenderCommanderProvision {
     param (
         $EnvironmentName
     )
-    Invoke-ClusterApplicationProvision -ClusterApplicationName BartenderCommander -EnvironmentName $EnvironmentName
-    $Nodes = Get-TervisClusterApplicationNode -ClusterApplicationName BartenderCommander -EnvironmentName $EnvironmentName
+    Invoke-ApplicationProvision -ApplicationName BartenderCommander -EnvironmentName $EnvironmentName
+    $Nodes = Get-TervisApplicationNode -ApplicationName BartenderCommander -EnvironmentName $EnvironmentName
     $Nodes | Install-WCSPrinters -PrintEngineOrientationRelativeToLabel Bottom
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
@@ -23,8 +23,8 @@ function Invoke-BartenderLicenseServerProvision {
     param (
         $EnvironmentName
     )
-    Invoke-ClusterApplicationProvision -ClusterApplicationName BartenderLicenseServer -EnvironmentName $EnvironmentName
-    $Nodes = Get-TervisClusterApplicationNode -ClusterApplicationName BartenderLicenseServer -EnvironmentName $EnvironmentName
+    Invoke-ApplicationProvision -ApplicationName BartenderLicenseServer -EnvironmentName $EnvironmentName
+    $Nodes = Get-TervisApplicationNode -ApplicationName BartenderLicenseServer -EnvironmentName $EnvironmentName
     $Nodes | Start-BartenderLicenseServerService
 }
 
