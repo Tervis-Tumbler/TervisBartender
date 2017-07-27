@@ -37,10 +37,7 @@ function Invoke-BartenderIntegrationServiceProvision {
     $Nodes | Install-WCSPrinters -PrintEngineOrientationRelativeToLabel Bottom
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
-    $Nodes | Set-TervisBartenderFiles
-    $Nodes | Set-TervisCommanderTaskList
-    $Nodes | New-BartenderCommanderFirewallRules
-    $Nodes | Install-BartenderCommanderScheduledTasks
+    $Nodes | New-BartenderIntegrationServiceFirewallRules
 }
 
 function New-BartenderCommanderFirewallRules {
@@ -54,6 +51,15 @@ function New-BartenderCommanderFirewallRules {
                 New-NetFirewallRule -Name "BartenderCommanderTask" -DisplayName "Bartender Commander Task" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderCommander | Out-Null
             }
         }
+    }
+}
+
+function New-BartenderIntegrationServiceFirewallRules {
+    param (
+        [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    process {
+        New-TervisFirewallRule -ComputerName $ComputerName -Name BartenderIntegrationServiceDeployment -DisplayName "Bartender Integration Service Deployment" -Direction Inbound -LocalPort 5170 -Protocol TCP -Action Allow -Group BartenderIntegrationService        
     }
 }
 
