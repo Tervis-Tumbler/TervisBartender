@@ -39,6 +39,7 @@ function Invoke-BartenderIntegrationServiceProvision {
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
     $Nodes | New-BartenderIntegrationServiceFirewallRules
     $Nodes | Set-TervisBartenderIntegrationServiceFiles
+    $Nodes | Restart-BartenderIntegrationService
 }
 
 function New-BartenderCommanderFirewallRules {
@@ -136,6 +137,16 @@ function Set-TervisCommanderTaskList {
                 Restart-Service -Name "Commander Service"
             }
         }
+    }
+}
+
+function Restart-BartenderIntegrationService {
+    param (
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    process {
+        Get-Service -ComputerName $ComputerName -Name "BarTender Integration Service" |
+        Restart-Service
     }
 }
 
