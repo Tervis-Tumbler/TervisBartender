@@ -38,6 +38,7 @@ function Invoke-BartenderIntegrationServiceProvision {
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName Tervis
     $Nodes | Add-WCSODBCDSN -ODBCDSNTemplateName tervisBartender
     $Nodes | New-BartenderIntegrationServiceFirewallRules
+    $Nodes | Set-TervisBartenderIntegrationServiceFiles
 }
 
 function New-BartenderCommanderFirewallRules {
@@ -96,6 +97,21 @@ function Set-TervisBartenderFiles {
     process {
         $PathToContainProgramDataOnNode = $PathToContainProgramData | ConvertTo-RemotePath -ComputerName $ComputerName
         Copy-Item -Path $ModulePath\ProgramData -Destination $PathToContainProgramDataOnNode -Force -Recurse
+    }
+}
+
+function Set-TervisBartenderIntegrationServiceFiles {
+    param (
+        [Parameter(ValueFromPipelineByPropertyName)]$ComputerName
+    )
+    begin {
+        $PathToToIntegrationServiceFilesLocal = "C:\ProgramData\Seagull\Services\Integrations\Service"
+    }
+    process {
+        $PathToToIntegrationServiceFilesRemote = $PathToToIntegrationServiceFilesLocal |
+        ConvertTo-RemotePath -ComputerName $ComputerName
+
+        Copy-Item -Path $ModulePath\Integrations -Destination $PathToToIntegrationServiceFilesRemote -Force -Recurse
     }
 }
 
