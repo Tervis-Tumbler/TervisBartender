@@ -1,4 +1,4 @@
-﻿<IntegrationFile Name="btxml" Version="4" ID="a01c26a6-574a-45e9-ad63-16bff142cfcf">
+﻿<IntegrationFile Name="BTXML receive on TCP Port 5170" Version="4" ID="a01c26a6-574a-45e9-ad63-16bff142cfcf">
   <ActionGroup Name="IntegrationFileActionGroup" ID="e8e6dfd0-f7a4-4edb-8e7b-c3384d9a6afb" RunMethod="Sequential" MessagingEnabled="false">
     <Actions>
       <SocketIntegration Name="Tervis" ID="d7d95aa1-72b6-4a87-9d99-858e005ac045" IgnoreErrors="true" Port="5170" ReadTimeout="60000" MaximumConnections="2048" Encoding="WindowsDefault">
