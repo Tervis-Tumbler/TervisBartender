@@ -111,7 +111,7 @@ function Set-TervisBartenderIntegrationServiceFiles {
         $PathToToIntegrationServiceFilesRemote = $PathToToIntegrationServiceFilesLocal |
         ConvertTo-RemotePath -ComputerName $ComputerName
 
-        Copy-Item -Path $ModulePath\Integrations -Destination $PathToToIntegrationServiceFilesRemote -Force -Recurse
+        Copy-Item -Path "$ModulePath\Integrations\BTXML receive on TCP Port 5170.btin" -Destination $PathToToIntegrationServiceFilesRemote -Force -Recurse
     }
 }
 
