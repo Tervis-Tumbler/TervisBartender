@@ -155,7 +155,9 @@ function ConvertTo-RemotePath {
         [Parameter(Mandatory,ValueFromPipeline)]$Path,
         [Parameter(Mandatory)]$ComputerName
     )
-    "\\$ComputerName\$($Path-replace ":","$")"
+    process {
+        "\\$ComputerName\$($Path-replace ":","$")"
+    }
 }
 
 function Restart-CommanderService {
@@ -194,4 +196,42 @@ function Install-BartenderCommanderScheduledTasks {
             -RepetitionIntervalName EveryDayAt3am `
             -ComputerName $ComputerName
     }
+}
+
+function Send-BartenderIntegrationServiceBTXMLJob {
+    param (
+        $PathToBartenderLabel,
+        $Printer,
+        $ContainerCode,
+        $ComputerName
+    )
+    $EndOfTextControlCharacter = [char]0x0003
+    $BTXML = @"
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLScript Version="2.0">
+   <Command>
+      <Print ReturnPrintData="true" ReturnLabelData="true" ReturnChecksum="false">
+         <Format>$PathToBartenderLabel</Format>
+         <PrintSetup>
+            <Printer>$Printer</Printer>
+            <Performance>
+               <AllowFormatCaching>true</AllowFormatCaching>
+               <AllowGraphicsCaching>true</AllowGraphicsCaching>
+               <AllowSerialization>true</AllowSerialization>
+               <AllowStaticGraphics>true</AllowStaticGraphics>
+               <AllowStaticObjects>true</AllowStaticObjects>
+               <AllowVariableDataOptimization>false</AllowVariableDataOptimization>
+               <WarnWhenUsingTrueTypeFonts>true</WarnWhenUsingTrueTypeFonts>
+            </Performance>
+         </PrintSetup>
+         <QueryPrompt Name="ContainerCode">
+            <Value>$ContainerCode</Value>
+         </QueryPrompt>
+      </Print>
+   </Command>
+</XMLScript>
+"@
+
+    $Data = $BTXML + $EndOfTextControlCharacter
+    Send-TCPClientData -ComputerName $ComputerName -Port 5170 -Data $Data -Encoding ([System.Text.Encoding]::Default) -NoReply
 }
