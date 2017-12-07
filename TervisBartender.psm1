@@ -255,4 +255,6 @@ function Install-TervisBartenderDesigner {
             )"
         )
     }
+
+    Set-TervisBartenderFiles -ComputerName $ComputerName
 }
