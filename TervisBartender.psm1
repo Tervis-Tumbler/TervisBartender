@@ -248,6 +248,7 @@ function Install-TervisBartenderDesigner {
             )"
         )
     }
+    
     if ($Version -eq "2016") {
         Install-TervisChocolateyPackage -ComputerName $ComputerName -PackageName bartender -version 11.0.4.3127 -packageParameters $(
             "Edition=EA ADDLOCAL=Bartender REMOVE=Librarian,HistoryExplorer,BatchMaker,PrintStation,PrinterMaestro,ReprintConsole SLS_PRIMARY=BartenderLicenseServer.Infrastructure.tervis.prv PKC=$(
