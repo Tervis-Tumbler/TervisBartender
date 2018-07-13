@@ -1,4 +1,4 @@
-﻿$ModulePath = (Get-Module -ListAvailable TervisBartender).ModuleBase
+$ModulePath = (Get-Module -ListAvailable TervisBartender).ModuleBase
 
 function Get-BartenderCommanderNodes {
     Get-TervisApplicationNode -ApplicationName BartenderCommander
@@ -244,7 +244,7 @@ function Install-TervisBartenderDesigner {
     if ($Version -eq "10") {
         Install-TervisChocolateyPackage -ComputerName $ComputerName -PackageName bartender -version 10.0.2868.1 -packageParameters $(
             "Edition=EA Remove=Librarian,LicenseServer,PrinterMaestro,BatchMaker,HistoryExplorer PKC=$(
-                (Get-PasswordstateCredential -PasswordID 4096 -AsPlainText).Password
+                (Get-PasswordstatePassword -ID 4096).Password
             )"
         )
     }
@@ -252,7 +252,7 @@ function Install-TervisBartenderDesigner {
     if ($Version -eq "2016") {
         Install-TervisChocolateyPackage -ComputerName $ComputerName -PackageName bartender -version 11.0.4.3127 -packageParameters $(
             "Edition=EA ADDLOCAL=Bartender REMOVE=Librarian,HistoryExplorer,BatchMaker,PrintStation,PrinterMaestro,ReprintConsole SLS_PRIMARY=BartenderLicenseServer.Infrastructure.tervis.prv PKC=$(
-                (Get-PasswordstateCredential -PasswordID 4096 -AsPlainText).Password
+                (Get-PasswordstatePassword -ID 4096).Password
             )"
         )
     }
