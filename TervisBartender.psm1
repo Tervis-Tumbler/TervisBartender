@@ -150,34 +150,6 @@ function Restart-BartenderIntegrationService {
     }
 }
 
-function ConvertTo-RemotePath {
-    param (
-        [Parameter(Mandatory,ValueFromPipeline)]$Path,
-        [Parameter(Mandatory)]$ComputerName
-    )
-    process {
-        "\\$ComputerName\$($Path-replace ":","$")"
-    }
-}
-
-function ConvertFrom-RemotePath {
-    param (
-        [Parameter(Mandatory,ValueFromPipeline)]$Path
-    )
-    process {
-        $Path -match "\\\w\$" | Out-Null
-        $PathRootSection = $Path |
-            Select-String -Pattern "\\\w\$" | 
-            foreach {$_.matches} | 
-            select -ExpandProperty Value
-        $PathRoot = $PathRootSection |
-            Select-String -Pattern "\w" |
-            foreach {$_.matches} |
-            select -ExpandProperty Value
-        $Path -replace "\\\\[^\\]+\\\w\$","$($PathRoot):"
-    }
-}
-
 function Restart-CommanderService {
     param (
         [Parameter(ValueFromPipelineByPropertyName)]$ComputerName = "localhost"
